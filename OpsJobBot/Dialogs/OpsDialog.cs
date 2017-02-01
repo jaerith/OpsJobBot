@@ -64,6 +64,35 @@ namespace OpsJobBot.Dialogs
                     context.Wait(MessageReceivedAsync);
                 }
             }
+            else if (message.Text.ToLower().StartsWith("check "))
+            {
+                bool QuestionAnswered = false;
+
+                if (message.Text.Contains(" "))
+                {
+                    string[] ProvidedCommand = message.Text.Split(new char[1] { ' ' });
+
+                    if (ProvidedCommand.Length == 2)
+                    {
+                        string sJobName = ProvidedCommand[1];
+
+                        QuestionAnswered = true;
+
+                        bool bIsJobRunning = SystemOps.IsJobRunning(CONST_JOB_DIRECTORY, sJobName);
+
+                        if (bIsJobRunning)
+                            await context.PostAsync("Yes, it is currently running.");
+                        else 
+                            await context.PostAsync("No, it's not currently running.");
+                    }
+                }
+
+                if (!QuestionAnswered)
+                {
+                    await context.PostAsync($"I did not understand the request : {message.Text}");
+                    context.Wait(MessageReceivedAsync);
+                }
+            }
             else
             {
                 await context.PostAsync($"I did not understand the request : {message.Text}");
