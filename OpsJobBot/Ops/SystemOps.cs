@@ -39,5 +39,25 @@ namespace OpsJobBot.Ops
                 throw;
             }
         }
+
+        static public bool IsJobRunning(string jobDirectory, string jobName)
+        {
+            bool isRunning = false;
+
+            Process[] JobPossibilities = Process.GetProcessesByName(jobName);
+
+            if ((JobPossibilities != null) && JobPossibilities.Length > 0)
+            {
+                isRunning = 
+                    JobPossibilities.FirstOrDefault(p => p.MainModule.FileName.StartsWith(jobDirectory)) != default(Process);
+            }
+
+            /*
+            bool isRunning = Process.GetProcessesByName(jobName)
+                            .FirstOrDefault(p => p.MainModule.FileName.StartsWith(jobDirectory)) != default(Process);
+            */
+
+            return isRunning;
+        }
     }
 }
