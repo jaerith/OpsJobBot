@@ -33,7 +33,7 @@ namespace OpsJobBot.Dialogs
         public virtual async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> argument)
         {
             var message = await argument;
-            if (message.Text.ToLower().StartsWith("run"))
+            if (message.Text.ToLower().StartsWith("run "))
             {
                 bool QuestionAnswered = false;
 
@@ -114,9 +114,9 @@ namespace OpsJobBot.Dialogs
                 {
                     try
                     {
-                        SystemOps.ExecuteCommand(JobFilepath);
+                        SystemOps.ExecuteCommand(JobFileInfo);
 
-                        await context.PostAsync("Ran the job successfully.");
+                        await context.PostAsync("And there it goes...off and running!");
                     }
                     catch (Exception ex)
                     {

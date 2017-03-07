@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Web;
 
@@ -8,35 +9,42 @@ namespace OpsJobBot.Ops
 {
     public class SystemOps
     {
-        static public void ExecuteCommand(string command)
+        static public void ExecuteCommand(FileInfo jobFileInfo, string method="old")
         {
-            ProcessStartInfo processInfo = new ProcessStartInfo("cmd.exe", "/c " + command);
-
-            processInfo.CreateNoWindow  = true;
-            processInfo.UseShellExecute = false;
-
-            processInfo.RedirectStandardError = processInfo.RedirectStandardOutput = true;
-
-            try
+            if (method == "old")
             {
-                using (Process process = Process.Start(processInfo))
+                ProcessStartInfo processInfo = new ProcessStartInfo("cmd.exe", "/c " + jobFileInfo.FullName);
+
+                processInfo.CreateNoWindow  = true;
+                processInfo.UseShellExecute = false;
+
+                processInfo.RedirectStandardError = processInfo.RedirectStandardOutput = true;
+
+                try
                 {
-                    process.WaitForExit();
-
-                    int exitCode = process.ExitCode;
-
-                    if (exitCode != 0)
+                    using (Process process = Process.Start(processInfo))
                     {
-                        string output = process.StandardOutput.ReadToEnd();
-                        string error  = process.StandardError.ReadToEnd();
+                        process.WaitForExit();
 
-                        throw new Exception("ERROR!  Error Code(" + exitCode + ") : Error Msg(" + error + ")");
+                        int exitCode = process.ExitCode;
+
+                        if (exitCode != 0)
+                        {
+                            string output = process.StandardOutput.ReadToEnd();
+                            string error  = process.StandardError.ReadToEnd();
+
+                            throw new Exception("ERROR!  Error Code(" + exitCode + ") : Error Msg(" + error + ")");
+                        }
                     }
                 }
+                catch (Exception ex)
+                {
+                    throw;
+                }
             }
-            catch (Exception ex)
+            else
             {
-                throw;
+
             }
         }
 
